@@ -1,6 +1,7 @@
 using Mono.Cecil.Cil;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -9,6 +10,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float distance = 1f;
     [SerializeField] private LayerMask wallLayerMask;
     [SerializeField] private LayerMask enemyLayerMask;
+    [SerializeField] private TextMeshProUGUI sizeText;
 
     private bool immortal = false;
     private float immortalityTimer = 3f;
@@ -26,6 +28,7 @@ public class Player : MonoBehaviour
         canMove = true;
         Size = 1;
         Lives = 3;
+        sizeText.text = Size.ToString();
         transform.localScale = new Vector3(Size, Size, transform.localScale.z);
 
         playerInputActions = new PlayerInputActions();
@@ -36,7 +39,7 @@ public class Player : MonoBehaviour
     {
         HandleMovement();
         CheckCollisionWithEnemy();
-
+        sizeText.text = Size.ToString();
         transform.localScale = new Vector3(Size, Size, transform.localScale.z);
     }
 
@@ -99,13 +102,27 @@ public class Player : MonoBehaviour
     public void TakeDamage()
     {
         Lives--;
-        immortal = true;
-        StartCoroutine(GiveImmortality());
-        Debug.Log(Lives);
+
+        if (Lives <= 0)
+        {
+            OnLivesEnded();
+        }
+        else
+        {
+            immortal = true;
+            StartCoroutine(GiveImmortality());
+            Debug.Log(Lives);
+        }
     }
 
     public void IncreaseSize(float size)
     {
         Size += size;
+    }
+
+    public void OnLivesEnded()
+    {
+        Destroy(gameObject);
+        Debug.Log("Lives ended!");
     }
 }
