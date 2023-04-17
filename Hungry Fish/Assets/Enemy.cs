@@ -12,6 +12,8 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
+        startSize = Random.Range(1, 4);
+
         size = startSize;
 
         transform.localScale = new Vector3(size, size, transform.localScale.z);
