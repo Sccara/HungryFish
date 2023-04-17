@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,15 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float distance = 1f;
-    [SerializeField] private LayerMask layerMask;
+    [SerializeField] private LayerMask wallLayerMask;
+    [SerializeField] private LayerMask enemyLayerMask;
+
+    private bool immortal = false;
+    private float immortalityTimer = 3f;
+
+    public float Size { get; private set; }
+
+    public int Lives { get; private set; }
 
     private bool canMove;
 
@@ -15,6 +24,9 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         canMove = true;
+        Size = 1;
+        Lives = 3;
+        transform.localScale = new Vector3(Size, Size, transform.localScale.z);
 
         playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
@@ -23,6 +35,9 @@ public class Player : MonoBehaviour
     private void Update()
     {
         HandleMovement();
+        CheckCollisionWithEnemy();
+
+        transform.localScale = new Vector3(Size, Size, transform.localScale.z);
     }
 
     public void HandleMovement()
@@ -31,11 +46,36 @@ public class Player : MonoBehaviour
 
         Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0f);
 
-        canMove = Physics2D.CapsuleCast(transform.position, GetPlayerSize(), CapsuleDirection2D.Horizontal, 90, moveDir, distance, layerMask);
+        canMove = !Physics2D.CapsuleCast(transform.position, GetPlayerSize(), CapsuleDirection2D.Horizontal, 90, moveDir, distance, wallLayerMask);
 
         if (canMove)
         {
             transform.position += moveDir * speed * Time.deltaTime;
+        }
+    }
+    public void CheckCollisionWithEnemy()
+    {
+        Vector2 inputVector = GetMovementVectorNormalized();
+
+        Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0f);
+
+        RaycastHit2D hit = Physics2D.CapsuleCast(transform.position, GetPlayerSize(), CapsuleDirection2D.Horizontal, 90, moveDir, distance, enemyLayerMask);
+
+        if (hit.collider != null)
+        {
+            Enemy enemy = hit.collider.gameObject.GetComponent<Enemy>();
+
+            float enemySize = enemy.GetSize();
+
+            if (enemySize > Size && !immortal)
+            {
+                TakeDamage();
+            }
+            else if (enemySize <= Size)
+            {
+                IncreaseSize(enemy.GetRewardSize());
+                enemy.TakeDamage();
+            }
         }
     }
 
@@ -47,5 +87,25 @@ public class Player : MonoBehaviour
     public Vector2 GetPlayerSize()
     {
         return new Vector2(GetComponent<CapsuleCollider2D>().size.x, GetComponent<CapsuleCollider2D>().size.y);
+    }
+
+    public IEnumerator GiveImmortality()
+    {
+        yield return new WaitForSeconds(immortalityTimer);
+
+        immortal = false;
+    }
+
+    public void TakeDamage()
+    {
+        Lives--;
+        immortal = true;
+        StartCoroutine(GiveImmortality());
+        Debug.Log(Lives);
+    }
+
+    public void IncreaseSize(float size)
+    {
+        Size += size;
     }
 }
