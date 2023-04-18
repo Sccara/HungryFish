@@ -2,9 +2,10 @@ using Mono.Cecil.Cil;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float distance = 1f;
@@ -12,6 +13,8 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask enemyLayerMask;
     [SerializeField] private TextMeshProUGUI sizeText;
 
+    private int playerScore = 0;
+    private string jsonSave;
     private bool immortal = false;
     private float immortalityTimer = 3f;
 
@@ -33,10 +36,21 @@ public class Player : MonoBehaviour
 
         playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
+
+        SaveObject saveObject = new SaveObject { score = playerScore };
+
+        string jsonSave = JsonUtility.ToJson(saveObject);
+
+        SaveObject loadedSaveObject = JsonUtility.FromJson<SaveObject>(jsonSave);
     }
 
     private void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+
         HandleMovement();
         CheckCollisionWithEnemy();
         sizeText.text = Size.ToString();
@@ -124,5 +138,10 @@ public class Player : MonoBehaviour
     {
         Destroy(gameObject);
         Debug.Log("Lives ended!");
+    }
+
+    private class SaveObject
+    {
+        public int score;
     }
 }
