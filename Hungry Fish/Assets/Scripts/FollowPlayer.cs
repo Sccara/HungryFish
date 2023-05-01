@@ -17,7 +17,6 @@ public class FollowPlayer : MonoBehaviour
     private void Start()
     {
         offset = new Vector3(0f, 0f, -1f);
-        
     }
 
     private void Update()

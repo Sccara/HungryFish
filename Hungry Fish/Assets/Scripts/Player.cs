@@ -13,8 +13,6 @@ public class Player : NetworkBehaviour
     [SerializeField] private LayerMask enemyLayerMask;
     [SerializeField] private TextMeshProUGUI sizeText;
 
-    private int playerScore = 0;
-    private string jsonSave;
     private bool immortal = false;
     private float immortalityTimer = 3f;
 
@@ -36,12 +34,6 @@ public class Player : NetworkBehaviour
 
         playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
-
-        SaveObject saveObject = new SaveObject { score = playerScore };
-
-        string jsonSave = JsonUtility.ToJson(saveObject);
-
-        SaveObject loadedSaveObject = JsonUtility.FromJson<SaveObject>(jsonSave);
     }
 
     private void Update()
@@ -53,8 +45,7 @@ public class Player : NetworkBehaviour
 
         HandleMovement();
         CheckCollisionWithEnemy();
-        sizeText.text = Size.ToString();
-        transform.localScale = new Vector3(Size, Size, transform.localScale.z);
+        CheckCollisionWithPlayer();
     }
 
     public void HandleMovement()
@@ -80,18 +71,50 @@ public class Player : NetworkBehaviour
 
         if (hit.collider != null)
         {
-            Enemy enemy = hit.collider.gameObject.GetComponent<Enemy>();
-
-            float enemySize = enemy.GetSize();
-
-            if (enemySize > Size && !immortal)
+            if (hit.collider.tag == "Enemy")
             {
-                TakeDamage();
+                Enemy enemy = hit.collider.gameObject.GetComponent<Enemy>();
+
+                float enemySize = enemy.GetSize();
+
+                if (enemySize > Size && !immortal)
+                {
+                    TakeDamage();
+                }
+                else if (enemySize <= Size)
+                {
+                    IncreaseSize(enemy.GetRewardSize());
+                    enemy.TakeDamage();
+                }
             }
-            else if (enemySize <= Size)
+        }
+    }
+
+    public void CheckCollisionWithPlayer()
+    {
+        Vector2 inputVector = GetMovementVectorNormalized();
+
+        Vector3 moveDir = new Vector3(inputVector.x, inputVector.y, 0f);
+
+        RaycastHit2D hit = Physics2D.CapsuleCast(transform.position, GetPlayerSize(), CapsuleDirection2D.Horizontal, 90, moveDir, distance, enemyLayerMask);
+
+        if (hit.collider != null)
+        {
+            if (hit.collider.tag == "Player")
             {
-                IncreaseSize(enemy.GetRewardSize());
-                enemy.TakeDamage();
+                Player enemyPlayer = hit.collider.gameObject.GetComponent<Player>();
+
+                float enemyPlayerSize = enemyPlayer.Size;
+
+                if (enemyPlayerSize > Size && !immortal)
+                {
+                    OnLivesEnded();
+                }
+                else if (enemyPlayerSize < Size)
+                {
+                    IncreaseSize(enemyPlayer.Size / 10);
+                    enemyPlayer.OnLivesEnded();
+                }
             }
         }
     }
@@ -132,16 +155,13 @@ public class Player : NetworkBehaviour
     public void IncreaseSize(float size)
     {
         Size += size;
+        sizeText.text = Size.ToString();
+        transform.localScale = new Vector3(Size, Size, transform.localScale.z);
     }
 
     public void OnLivesEnded()
     {
         Destroy(gameObject);
         Debug.Log("Lives ended!");
-    }
-
-    private class SaveObject
-    {
-        public int score;
     }
 }
