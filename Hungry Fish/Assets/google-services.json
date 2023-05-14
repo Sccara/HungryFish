@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "938144820322",
+    "project_id": "hungry-fish-game",
+    "storage_bucket": "hungry-fish-game.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:938144820322:android:f6e1e8da424cf0b8db353b",
+        "android_client_info": {
+          "package_name": "com.XStreamGames.HungryFish"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "938144820322-987lueigmivv7fad2bnpnt6mqn57m75j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtqpsp2MzfyQ6PEuGFmA-Sl6cHjqehzJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "938144820322-987lueigmivv7fad2bnpnt6mqn57m75j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "938144820322-hm34re75ocf9bmlkt2poj3k8b3t533ff.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.XStreamGames.HungryFish"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
