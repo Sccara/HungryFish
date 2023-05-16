@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     private float size;
     [SerializeField] private int startSize;
     [SerializeField] private TextMeshProUGUI sizeEnemyText;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     private float sizeReward;
 
@@ -43,5 +44,10 @@ public class Enemy : MonoBehaviour
     public float GetRewardSize()
     {
         return sizeReward;
+    }
+
+    public void SetSprite(Sprite sprite)
+    {
+        spriteRenderer.sprite = sprite;
     }
 }

@@ -8,13 +8,15 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private Transform enemyPrefab;
 
+    [SerializeField] private List<Sprite> sprites;
+
     private float spawnRangeX = 100f;
     private float spawnRangeY = 100f;
     private int enemiesCount = 30;
 
     private void Start()
     {
-        SpawnEnemies();
+        NetworkManagerUI.OnStartServer += SpawnEnemies;
     }
 
     private void SpawnEnemies()
@@ -25,10 +27,19 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    private void SpawnEnemy()
+    public Transform SpawnEnemy()
     {
         Vector2 spawnRange = new Vector2(Random.Range(-spawnRangeX, spawnRangeX), Random.Range(-spawnRangeY, spawnRangeY));
 
-        Instantiate(enemyPrefab, spawnRange, Quaternion.identity);
+        Transform enemy = Instantiate(enemyPrefab, spawnRange, Quaternion.identity);
+
+        enemy.GetComponent<Enemy>().SetSprite(GetRandomEnemySprite());
+
+        return enemy;
+    }
+
+    private Sprite GetRandomEnemySprite()
+    {
+        return sprites[Random.Range(0, 6)];
     }
 }

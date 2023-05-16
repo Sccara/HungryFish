@@ -4,9 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
+
 public class RegistrationFirebase : MonoBehaviour
 {
-    [SerializeField] private InputField inputFieldName, inputFieldEmail, inputFieldPassword;
+    [SerializeField] private TMP_InputField inputFieldName, inputFieldEmail, inputFieldPassword;
 
     public void RegisterButton()
     {
@@ -44,6 +47,7 @@ public class RegistrationFirebase : MonoBehaviour
                     //PlayerPrefs.SetString("password", password);
 
                     // Load Menu scene
+                    SceneManager.LoadScene("MainMenu");
                 }
             }
         }

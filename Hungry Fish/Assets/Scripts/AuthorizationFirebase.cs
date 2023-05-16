@@ -2,20 +2,22 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Firebase;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class AuthorizationFirebase : MonoBehaviour
 {
-    [SerializeField] private InputField inputFieldEmail, inputFieldPassword;
+    [SerializeField] private TMP_InputField inputFieldEmail, inputFieldPassword;
 
 
     private void Start()
     {
-        if (PlayerPrefs.HasKey("email") && PlayerPrefs.HasKey("password"))
-        {
-            inputFieldEmail.text = PlayerPrefs.GetString("email");
-            inputFieldPassword.text = PlayerPrefs.GetString("password");
-            Invoke("LoginButton", 1f);
-        }
+        //if (PlayerPrefs.HasKey("email") && PlayerPrefs.HasKey("password"))
+        //{
+        //    inputFieldEmail.text = PlayerPrefs.GetString("email");
+        //    inputFieldPassword.text = PlayerPrefs.GetString("password");
+        //    Invoke("LoginButton", 1f);
+        //}
 
     }
 
@@ -38,8 +40,9 @@ public class AuthorizationFirebase : MonoBehaviour
             //PlayerPrefs.SetString("email", email);
             //PlayerPrefs.SetString("password", password);
             FirebaseConnection.User = loginTask.Result.User;
-            
+
             // Load menu scene
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }

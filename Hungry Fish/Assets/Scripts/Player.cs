@@ -12,6 +12,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private LayerMask wallLayerMask;
     [SerializeField] private LayerMask enemyLayerMask;
     [SerializeField] private TextMeshProUGUI sizeText;
+    [SerializeField] private SpriteRenderer sprite;
 
     private bool immortal = false;
     private float immortalityTimer = 3f;
@@ -58,9 +59,11 @@ public class Player : NetworkBehaviour
 
         if (canMove)
         {
+            FlipSprite();
             transform.position += moveDir * speed * Time.deltaTime;
         }
     }
+
     public void CheckCollisionWithEnemy()
     {
         Vector2 inputVector = GetMovementVectorNormalized();
@@ -116,6 +119,20 @@ public class Player : NetworkBehaviour
                     enemyPlayer.OnLivesEnded();
                 }
             }
+        }
+    }
+
+    private void FlipSprite()
+    {
+        Vector2 input = GetMovementVectorNormalized();
+
+        if (input.x > 0)
+        {
+            sprite.flipX = true;
+        }
+        else if (input.x < 0)
+        {
+            sprite.flipX = false;
         }
     }
 

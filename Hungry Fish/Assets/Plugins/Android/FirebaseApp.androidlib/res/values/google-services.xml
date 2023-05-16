@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id">
+  <string name="gcm_defaultSenderId" translatable="false">938144820322</string>
+  <string name="google_storage_bucket" translatable="false">hungry-fish-game.appspot.com</string>
+  <string name="project_id" translatable="false">hungry-fish-game</string>
+  <string name="google_api_key" translatable="false">AIzaSyDtqpsp2MzfyQ6PEuGFmA-Sl6cHjqehzJk</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDtqpsp2MzfyQ6PEuGFmA-Sl6cHjqehzJk</string>
+  <string name="google_app_id" translatable="false">1:938144820322:android:f6e1e8da424cf0b8db353b</string>
+  <string name="default_web_client_id" translatable="false">938144820322-987lueigmivv7fad2bnpnt6mqn57m75j.apps.googleusercontent.com</string>
+</resources>
